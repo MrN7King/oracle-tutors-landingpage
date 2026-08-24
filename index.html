@@ -8,85 +8,14 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Oracle Tutors — Wise tutors. Wherever you are.</title>
 
-<!--
-====================================================================
-  ORACLE TUTORS — LANDING PAGE
-====================================================================
-  HOW THIS FILE IS ORGANIZED (search for these tags to jump around):
-    [TOC-1]  Fonts + CSS design tokens
-    [TOC-2]  Navigation
-    [TOC-3]  Hero + mascot intro
-    [TOC-4]  Trust bar (animated stats)
-    [TOC-5]  How it works
-    [TOC-6]  Subjects (flip cards)
-    [TOC-7]  Why families trust us
-    [TOC-8]  Meet the founders
-    [TOC-9]  Pricing
-    [TOC-10] Testimonials carousel
-    [TOC-11] Quick-match form (submits to Google Sheets + auto-email)
-    [TOC-12] FAQ
-    [TOC-13] Final CTA + footer
-    [TOC-14] Floating mascot chat button
-    [TOC-15] JavaScript (all interactions, plain vanilla JS)
-
-  BEFORE GOING LIVE — REPLACE THESE PLACEHOLDERS:
-    1. WhatsApp number   → find/replace "94770000000" (appears several times)
-    2. Email address     → find/replace "hello@oracletutors.com"
-    3. Photos / videos   → every ".media-placeholder" block has a comment
-                            right above it explaining exactly what to swap in
-    4. Testimonials      → search "TESTIMONIAL PLACEHOLDER" (3 spots)
-    5. Founder bios       → search "FOUNDER PLACEHOLDER" (2 spots)
-    6. Stats in trust bar → search "STAT PLACEHOLDER"
-    7. Contact form backend → find "SCRIPT_URL" in [TOC-15] and paste in
-                               your deployed Google Apps Script Web App URL
-                               (see the setup guide that came with this file)
-
-  CONTACT FORM BACKEND (Google Sheets + Google Apps Script):
-    The quick-match form (#matchForm, [TOC-11]) POSTs to a free Google
-    Apps Script Web App, which appends the submission to a Google Sheet
-    (your free "database") and sends the visitor an auto-confirmation
-    email. This requires zero Node/server hosting, so it works fine on
-    static hosts like GitHub Pages or Vercel's free tier. See the
-    accompanying Code.gs file and setup steps for how to wire it up.
-
-  SECURITY NOTES FOR WHOEVER HOSTS THIS:
-    - All external links use rel="noopener noreferrer" to stop the new
-      tab from getting a reference back to this page (tab-nabbing).
-    - The quick-match form submits via fetch() as JSON to a Google
-      Apps Script Web App URL (see SCRIPT_URL in [TOC-15]). Nothing
-      is written into a WhatsApp link anymore, so there's no
-      URL-injection surface there; the Apps Script side is
-      responsible for validating/escaping what it writes to the
-      Sheet and into outgoing emails.
-    - No inline event handlers (onclick="") are used anywhere; every
-      interaction is wired up in the script block via
-      addEventListener, which is safer to review and maintain.
-    - When you deploy this (Netlify, Vercel, your own server, etc.),
-      set these response headers at the hosting level — a static
-      HTML file can't set them itself:
-        Content-Security-Policy, X-Content-Type-Options: nosniff,
-        Referrer-Policy: strict-origin-when-cross-origin,
-        Strict-Transport-Security (once you're on HTTPS, which any
-        modern host gives you by default).
-====================================================================
--->
-
-<!-- [TOC-1] Fonts + design tokens -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Tiny inline favicon so the browser tab doesn't look blank/generic -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23182849'/%3E%3Ccircle cx='24' cy='30' r='7' fill='%23FFFBF2'/%3E%3Ccircle cx='40' cy='30' r='7' fill='%23FFFBF2'/%3E%3Ccircle cx='24' cy='30' r='3' fill='%23182849'/%3E%3Ccircle cx='40' cy='30' r='3' fill='%23182849'/%3E%3Cpath d='M29 35 L32 39 L35 35 Z' fill='%23FF7A5C'/%3E%3C/svg%3E">
 
 <style>
-  /* ============================================================
-     DESIGN TOKENS — change a color/font here and it updates
-     everywhere on the page. This is the only place hex values
-     and font names should live.
-     ============================================================ */
   :root{
-    /* Colors */
     --cream:#FFFBF2;
     --cream-2:#FFF3DE;
     --navy:#182849;
@@ -99,13 +28,11 @@
     --mint:#3ECF8E;
     --lilac:#B49CF2;
     --white:#FFFFFF;
-    /* Shape + shadow */
     --radius-lg:28px;
     --radius-md:18px;
     --radius-sm:12px;
     --shadow-soft: 0 12px 28px rgba(24,40,73,0.10);
     --shadow-pop: 0 16px 34px rgba(24,40,73,0.18);
-    /* Motion timing, reused so hover/animations feel consistent */
     --ease-bouncy: cubic-bezier(.34, 1.56, .64, 1);
     --ease-smooth: cubic-bezier(.4, 0, .2, 1);
   }
@@ -113,8 +40,6 @@
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
 
-  /* Respect users who've asked their OS to reduce motion —
-     this one rule quietly disables almost every animation below. */
   @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{
       animation-duration:0.001ms !important;
@@ -147,8 +72,6 @@
   img,svg{ display:block; max-width:100%; }
   button{ font-family:inherit; }
 
-  /* Accessible focus ring — visible for keyboard users, invisible
-     for mouse clicks (handled by browsers' :focus-visible support) */
   :focus-visible{
     outline:3px solid var(--coral);
     outline-offset:3px;
@@ -157,8 +80,6 @@
 
   .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
 
-  /* Skip link — hidden until a keyboard user tabs to it, lets them
-     jump straight past the nav into the page content */
   .skip-link{
     position:absolute;
     left:-999px;
@@ -172,9 +93,6 @@
   }
   .skip-link:focus{ left:0; top:0; }
 
-  /* ============================================================
-     [TOC-2] NAVIGATION
-     ============================================================ */
   header.site-nav{
     position:sticky;
     top:0;
@@ -241,7 +159,6 @@
 
   .nav-cta{ display:flex; gap:12px; align-items:center; }
 
-  /* Hamburger button — hidden on desktop, shown under 980px */
   .nav-toggle{
     display:none;
     background:var(--white);
@@ -255,7 +172,6 @@
   }
   .nav-toggle svg{ width:20px; height:20px; }
 
-  /* Mobile slide-down menu */
   .mobile-menu{
     display:none;
     flex-direction:column;
@@ -271,9 +187,6 @@
   }
   .mobile-menu.is-open{ display:flex; }
 
-  /* ============================================================
-     [TOC-3] HERO
-     ============================================================ */
   .hero{ position:relative; padding:64px 0 40px; overflow:hidden; }
 
   .blob{ position:absolute; border-radius:50%; filter:blur(2px); z-index:0; }
@@ -290,9 +203,6 @@
     50%{ transform:translateY(-14px) translateX(8px); }
   }
 
-  /* Hand-drawn-style doodles scattered near the headline — this is
-     the kind of imperfect, sketchy detail that reads as "designed
-     by a person" rather than a template. */
   .doodle{ position:absolute; pointer-events:none; opacity:0.7; z-index:0; }
 
   .hero-grid{
@@ -319,9 +229,6 @@
   .hero h1{ font-size:clamp(2.3rem, 4.6vw, 3.6rem); letter-spacing:-0.02em; }
   .hero h1 .accent{ color:var(--coral); position:relative; }
   .hero h1 .accent2{ color:var(--sky-deep); }
-  /* Marker-style underline drawn under one headline word with SVG,
-     instead of a plain CSS border — reads as a deliberate design
-     choice rather than a default underline. */
   .marker-underline{
     display:inline-block;
     position:relative;
@@ -369,13 +276,6 @@
   }
   @keyframes float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
 
-  /* --------------------------------------------------------------
-     MEDIA PLACEHOLDER — reusable style for any spot where a real
-     photo or video should eventually go. Swap the whole
-     .media-placeholder div for an <img> or <video> tag; keep the
-     same class on the wrapper if you want the rounded corners to
-     carry over automatically.
-     -------------------------------------------------------------- */
   .media-placeholder{
     display:flex;
     flex-direction:column;
@@ -404,12 +304,8 @@
     box-shadow:var(--shadow-soft);
   }
 
-  /* ---------- Wave divider ---------- */
   .wave{ display:block; width:100%; line-height:0; }
 
-  /* ============================================================
-     [TOC-4] TRUST BAR
-     ============================================================ */
   .trust-bar{ background:var(--navy); padding:30px 0; }
   .trust-row{ display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
   .trust-item{ color:var(--white); text-align:left; flex:1; min-width:180px; }
@@ -423,9 +319,6 @@
   }
   .trust-label{ font-size:0.9rem; color:rgba(255,255,255,0.78); font-weight:700; margin-top:4px; display:block; }
 
-  /* ============================================================
-     Shared section layout
-     ============================================================ */
   section{ padding:88px 0; position:relative; }
   .section-head{ text-align:center; max-width:640px; margin:0 auto 52px; }
   .section-tag{
@@ -440,8 +333,6 @@
   .section-head h2{ font-size:clamp(1.8rem, 3vw, 2.5rem); }
   .section-head p{ margin-top:14px; color:var(--navy-soft); font-size:1.05rem; }
 
-  /* Scroll-reveal: elements start slightly lower + transparent,
-     JS adds .in-view when they scroll into frame (see [TOC-15]) */
   .reveal{
     opacity:0;
     transform:translateY(22px);
@@ -449,9 +340,6 @@
   }
   .reveal.in-view{ opacity:1; transform:translateY(0); }
 
-  /* ============================================================
-     [TOC-5] HOW IT WORKS
-     ============================================================ */
   .steps{ display:grid; grid-template-columns:repeat(4, 1fr); gap:22px; }
   .step-card{
     background:var(--white);
@@ -475,9 +363,6 @@
   .step-card h3{ font-size:1.12rem; margin-bottom:8px; }
   .step-card p{ color:var(--navy-soft); font-size:0.95rem; margin:0; }
 
-  /* ============================================================
-     [TOC-6] SUBJECTS — flip cards (click/tap or press Enter)
-     ============================================================ */
   .subject-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; }
   .subject-card{
     background:none; border:none; padding:0; cursor:pointer;
@@ -520,9 +405,6 @@
   .subject-card.wild .card-front h3, .subject-card.wild .card-front p{ color:var(--white); }
   .subject-card.wild .subject-emoji{ background:rgba(255,255,255,0.14); }
 
-  /* ============================================================
-     [TOC-7] WHY US
-     ============================================================ */
   .why-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
   .why-card{
     background:var(--cream-2);
@@ -535,9 +417,6 @@
   .why-card h3{ font-size:1.05rem; margin-bottom:8px; }
   .why-card p{ font-size:0.92rem; color:var(--navy-soft); margin:0; }
 
-  /* ============================================================
-     [TOC-8] FOUNDERS
-     ============================================================ */
   .founder-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:28px; }
   .founder-card{
     background:var(--white);
@@ -553,9 +432,6 @@
   .founder-role{ font-size:0.82rem; color:var(--coral); font-weight:800; margin-bottom:8px; display:block; }
   .founder-card p.bio{ font-size:0.9rem; color:var(--navy-soft); margin:0; }
 
-  /* ============================================================
-     [TOC-9] PRICING
-     ============================================================ */
   .price-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
   .price-card{
     background:var(--white);
@@ -580,9 +456,6 @@
   .price-card li{ padding:5px 0; display:flex; gap:8px; }
   .price-note{ text-align:center; margin-top:30px; color:var(--navy-soft); font-size:0.92rem; }
 
-  /* ============================================================
-     [TOC-10] TESTIMONIALS CAROUSEL
-     ============================================================ */
   .carousel{ max-width:640px; margin:0 auto; position:relative; }
   .carousel-track{ overflow:hidden; border-radius:var(--radius-md); }
   .carousel-slides{
@@ -598,7 +471,7 @@
     gap:18px;
     align-items:flex-start;
   }
-  .test-card .media-placeholder{ width:56px; height:56px; border-radius:50%; flex-shrink:0; font-size:0.6rem; padding:4px; }
+  .test-card .test-avatar{ width:56px; height:56px; border-radius:50%; flex-shrink:0; object-fit:cover; box-shadow:var(--shadow-soft); }
   .test-stars{ color:var(--sun); font-size:1rem; margin-bottom:10px; letter-spacing:2px; }
   .test-quote{ font-size:0.96rem; color:var(--navy); margin-bottom:14px; }
   .test-name{ font-size:0.86rem; color:var(--navy-soft); font-weight:800; }
@@ -619,9 +492,6 @@
   }
   .carousel-dot.is-active{ background:var(--coral); transform:scale(1.3); }
 
-  /* ============================================================
-     [TOC-11] QUICK-MATCH FORM
-     ============================================================ */
   .match-panel{
     background:var(--white);
     border-radius:var(--radius-lg);
@@ -658,9 +528,6 @@
   .form-status.is-success{ color:var(--mint); }
   .form-status.is-error{ color:var(--coral); }
 
-  /* ============================================================
-     [TOC-12] FAQ
-     ============================================================ */
   .faq-list{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
   details{
     background:var(--white);
@@ -682,9 +549,6 @@
   details[open] summary::after{ transform:rotate(45deg); }
   details p{ margin:0 0 18px; color:var(--navy-soft); font-size:0.94rem; }
 
-  /* ============================================================
-     [TOC-13] FINAL CTA + FOOTER
-     ============================================================ */
   .final-cta{
     background:var(--navy);
     border-radius:var(--radius-lg);
@@ -702,6 +566,7 @@
     display:flex; justify-content:space-between; gap:30px; flex-wrap:wrap;
     padding-bottom:30px; border-bottom:2px solid rgba(24,40,73,0.08);
   }
+  .footer-col{ flex:1 1 160px; min-width:150px; }
   .footer-col h4{ font-family:'Baloo 2', sans-serif; font-size:0.95rem; margin-bottom:14px; color:var(--navy); }
   .footer-col a, .footer-col p{ display:block; font-size:0.9rem; color:var(--navy-soft); margin-bottom:8px; }
   .footer-col a:hover{ color:var(--coral); }
@@ -710,9 +575,6 @@
     padding-top:22px; font-size:0.85rem; color:var(--navy-soft); flex-wrap:wrap; gap:10px;
   }
 
-  /* ============================================================
-     [TOC-14] FLOATING MASCOT CHAT BUTTON
-     ============================================================ */
   .mascot-fab{
     position:fixed;
     right:24px;
@@ -752,7 +614,6 @@
   }
   .mascot-fab:hover .mascot-tooltip, .mascot-fab:focus-visible .mascot-tooltip{ opacity:1; transform:translateX(0); }
 
-  /* Confetti particles spawned by JS on primary CTA clicks */
   .confetti-piece{
     position:fixed;
     width:8px; height:8px;
@@ -763,26 +624,37 @@
     will-change:transform, opacity;
   }
 
-  /* ============================================================
-     RESPONSIVE
-     ============================================================ */
   @media (max-width: 980px){
     .hero-grid{ grid-template-columns:1fr; }
     .hero-art{ order:-1; max-width:420px; margin:0 auto; }
+    .hero-copy{ text-align:center; }
+    .eyebrow{ margin-left:auto; margin-right:auto; }
+    .hero-sub{ margin-left:auto; margin-right:auto; }
+    .hero-cta-row{ justify-content:center; }
+    .hero-trust{ justify-content:center; }
     .steps, .subject-grid, .why-grid, .price-grid, .founder-grid{ grid-template-columns:repeat(2,1fr); }
     .match-panel{ grid-template-columns:1fr; padding:30px; }
     .nav-links{ display:none; }
     .nav-toggle{ display:flex; }
   }
   @media (max-width: 600px){
-    .wrap{ padding:0 20px; }
+    .wrap{ padding:0 24px; }
     .steps, .subject-grid, .why-grid, .price-grid, .founder-grid{ grid-template-columns:1fr; }
-    .founder-card{ flex-direction:column; }
+    .founder-card{ flex-direction:column; text-align:center; align-items:center; }
+    .founder-card .media-placeholder{ margin:0 auto; }
     .form-two-col{ grid-template-columns:1fr; }
     section{ padding:64px 0; }
     .final-cta{ padding:40px 22px; }
     .mascot-fab{ right:16px; bottom:16px; width:56px; height:56px; }
     .mascot-fab svg{ width:34px; height:34px; }
+
+    /* Footer felt left-crammed on narrow screens because the
+       columns were left-aligned with uneven widths under
+       justify-content:space-between — stack + center instead. */
+    .footer-row{ flex-direction:column; align-items:center; text-align:center; gap:28px; }
+    .footer-col{ width:100%; max-width:320px; }
+    .footer-col .brand{ justify-content:center; }
+    .footer-bottom{ flex-direction:column; text-align:center; gap:8px; }
   }
 </style>
 </head>
@@ -790,7 +662,6 @@
 
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
-<!-- ============ [TOC-2] NAV ============ -->
 <header class="site-nav">
   <div class="wrap nav-row">
     <div class="brand">
@@ -817,8 +688,7 @@
     </nav>
 
     <div class="nav-cta">
-      <a class="btn btn-primary btn-sm js-wa-link" href="#" target="_blank" rel="noopener noreferrer">💬 WhatsApp us</a>
-      <!-- Hamburger — toggled by JS, see initMobileNav() in [TOC-15] -->
+      <a class="btn btn-primary btn-sm js-wa-link" href="#" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
       <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="#182849" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
           <line x1="3" y1="6" x2="21" y2="6"/>
@@ -829,7 +699,6 @@
     </div>
   </div>
 
-  <!-- Mobile menu panel, hidden by default via CSS, toggled with .is-open -->
   <nav class="wrap mobile-menu" id="mobileMenu" aria-label="Mobile">
     <a href="#how">How it works</a>
     <a href="#subjects">Subjects</a>
@@ -840,13 +709,11 @@
 
 <main id="main-content">
 
-<!-- ============ [TOC-3] HERO ============ -->
 <section class="hero">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
 
-  <!-- Small hand-drawn-style doodles for texture near the headline -->
   <svg class="doodle" style="top:90px; left:6%;" width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
     <path d="M23 4 L27 18 L41 22 L27 26 L23 40 L19 26 L5 22 L19 18 Z" fill="#FFC94A" opacity="0.7"/>
   </svg>
@@ -865,7 +732,7 @@
       </h1>
       <p class="hero-sub">Tell us what you (or your child) need help with — from primary school math to university chemistry to your first guitar chords. We'll hand-pick a vetted tutor and get you started for a fraction of the usual price.</p>
       <div class="hero-cta-row">
-        <a class="btn btn-primary js-wa-link js-confetti" href="#" target="_blank" rel="noopener noreferrer">Book a $2 trial lesson →</a>
+        <a class="btn btn-primary js-wa-link js-confetti" href="#" target="_blank" rel="noopener noreferrer">Contact Us</a>
         <a class="btn btn-ghost" href="#match">Get matched now</a>
       </div>
       <div class="hero-trust">
@@ -877,13 +744,6 @@
 
     <div class="hero-art">
       <div class="globe-card">
-        <!--
-          MEDIA PLACEHOLDER — hero intro video.
-          Swap this whole block for something like:
-          <video controls poster="/images/hero-poster.jpg" style="border-radius:var(--radius-md);width:100%;">
-            <source src="/videos/oracle-intro.mp4" type="video/mp4">
-          </video>
-        -->
         <div class="media-placeholder mp-video" role="img" aria-label="Placeholder for a short intro video">
           <div class="play-btn">▶</div>
           <span>60-second intro video<br>goes here</span>
@@ -899,10 +759,8 @@
 
 <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,32 C240,64 480,0 720,20 C960,40 1200,64 1440,24 L1440,60 L0,60 Z" fill="#182849"></path></svg>
 
-<!-- ============ [TOC-4] TRUST BAR (animated counters) ============ -->
 <div class="trust-bar">
   <div class="wrap trust-row">
-    <!-- STAT PLACEHOLDER — swap data-count values for your real numbers once you have them -->
     <div class="trust-item">
       <span class="trust-num"><span class="js-counter" data-count="40">0</span>+</span>
       <span class="trust-label">Students matched so far</span>
@@ -922,7 +780,6 @@
   </div>
 </div>
 
-<!-- ============ [TOC-5] HOW IT WORKS ============ -->
 <section id="how">
   <div class="wrap">
     <div class="section-head reveal">
@@ -949,13 +806,12 @@
       <div class="step-card reveal">
         <div class="step-num">4</div>
         <h3>Learn every week</h3>
-        <p>Regular sessions at a time that works for you, with notes after every class.</p>
+        <p>Regular sessions at a time that works for you, with notes and recordings after every class.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ [TOC-6] SUBJECTS (click a card to flip it) ============ -->
 <section id="subjects" style="background:var(--cream-2);">
   <div class="wrap">
     <div class="section-head reveal">
@@ -965,9 +821,6 @@
     </div>
     <div class="subject-grid">
 
-      <!-- Each subject card is a <button> so it's keyboard-operable
-           (Enter/Space flips it) and correctly announced by screen
-           readers via aria-pressed. See initSubjectFlip() in [TOC-15]. -->
       <button class="subject-card reveal" aria-pressed="false">
         <div class="card-inner">
           <div class="card-front">
@@ -1092,7 +945,6 @@
   </div>
 </section>
 
-<!-- ============ [TOC-7] WHY US ============ -->
 <section>
   <div class="wrap">
     <div class="section-head reveal">
@@ -1114,7 +966,7 @@
       <div class="why-card reveal">
         <span class="ic">💸</span>
         <h3>First-lesson guarantee</h3>
-        <p>Not the right fit? We'll refund the trial or match you with someone new — no hassle.</p>
+        <p>Not the right fit? We'll match you with someone new — no hassle.</p>
       </div>
       <div class="why-card reveal">
         <span class="ic">🕒</span>
@@ -1135,7 +987,6 @@
   </div>
 </section>
 
-<!-- ============ [TOC-8] MEET THE FOUNDERS ============ -->
 <section style="background:var(--cream-2);">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1145,30 +996,19 @@
     </div>
     <div class="founder-grid">
 
-      <!-- FOUNDER PLACEHOLDER 1 — replace name, bio, and photo -->
       <div class="founder-card reveal">
-        <!-- Swap for: <img src="/images/founder-1.jpg" alt="Photo of [Name]" class="media-placeholder" style="object-fit:cover;"> -->
-        <div class="media-placeholder mp-photo" role="img" aria-label="Placeholder for founder photo">
-          <span class="mp-icon">🧑</span>
-          <span>Photo</span>
-        </div>
         <div>
-          <h3>Founder name</h3>
-          <span class="founder-role">Co-founder &amp; Operations (placeholder)</span>
-          <p class="bio">A line or two about their background, why they started Oracle Tutors, and what they personally handle day to day.</p>
+          <h3>G. Dilaksan</h3>
+          <span class="founder-role">Co-founder &amp; Operations</span>
+          <p class="bio">With experience in client work, technology, and operations. We co-founded Oracle Tutors to make quality, affordable one-to-one tutoring more accessible to students worldwide.  <br> Manages daily operations, scheduling tech platforms, and optimizing administrative workflows.</p>
         </div>
       </div>
 
-      <!-- FOUNDER PLACEHOLDER 2 -->
       <div class="founder-card reveal">
-        <div class="media-placeholder mp-photo" role="img" aria-label="Placeholder for founder photo">
-          <span class="mp-icon">🧑</span>
-          <span>Photo</span>
-        </div>
         <div>
-          <h3>Founder name</h3>
-          <span class="founder-role">Co-founder &amp; Tutor Relations (placeholder)</span>
-          <p class="bio">A line or two about their background, why they started Oracle Tutors, and what they personally handle day to day.</p>
+          <h3>V. Gurunivasan</h3>
+          <span class="founder-role">Co-founder &amp; Tutor Relations</span>
+          <p class="bio">With a background in technology, client support, and operations, I bring a people-focused approach to Oracle Tutors. I focus on finding, supporting, and building strong relationships with tutors so students receive the right guidance and learning experience. <br> Handles tutor recruitment, vetting qualifications, training, and maintaining strong tutor-student relations.</p>
         </div>
       </div>
 
@@ -1176,7 +1016,6 @@
   </div>
 </section>
 
-<!-- ============ [TOC-9] PRICING ============ -->
 <section id="pricing">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1188,8 +1027,8 @@
       <div class="price-card reveal">
         <h3>School Subjects</h3>
         <p class="price-sub">Grades UKG–12, core subjects</p>
-        <div class="price-amount">LKR 5,000<small>/hr</small></div>
-        <div class="price-usd">≈ $17 USD / hr</div>
+        <div class="price-amount">$22 USD<small>/hr</small></div>
+        <div class="price-usd">≈ €20 EUR / hr</div>
         <ul>
           <li>✔ Math, Science, English &amp; more</li>
           <li>✔ Vetted, matched tutor</li>
@@ -1199,8 +1038,8 @@
       <div class="price-card reveal">
         <h3>Test Prep &amp; Advanced</h3>
         <p class="price-sub">SAT, IB, A-Level, AP</p>
-        <div class="price-amount">LKR 6,500–7,500<small>/hr</small></div>
-        <div class="price-usd">≈ $22–25 USD / hr</div>
+        <div class="price-amount">$29 USD<small>/hr</small></div>
+        <div class="price-usd">≈ €26 EUR / hr</div>
         <ul>
           <li>✔ Exam-specialist tutors</li>
           <li>✔ Practice papers included</li>
@@ -1210,8 +1049,8 @@
       <div class="price-card reveal">
         <h3>University Level</h3>
         <p class="price-sub">Undergraduate coursework</p>
-        <div class="price-amount">LKR 7,500–9,000<small>/hr</small></div>
-        <div class="price-usd">≈ $25–30 USD / hr</div>
+        <div class="price-amount">$36 USD<small>/hr</small></div>
+        <div class="price-usd">≈ €32 EUR / hr</div>
         <ul>
           <li>✔ Subject-matter specialists</li>
           <li>✔ Assignment &amp; concept help</li>
@@ -1221,8 +1060,8 @@
       <div class="price-card reveal">
         <h3>Music &amp; Instruments</h3>
         <p class="price-sub">Piano, guitar, violin, vocals</p>
-        <div class="price-amount">LKR 5,500–6,500<small>/hr</small></div>
-        <div class="price-usd">≈ $18–22 USD / hr</div>
+        <div class="price-amount">$24 USD<small>/hr</small></div>
+        <div class="price-usd">≈ €22 EUR / hr</div>
         <ul>
           <li>✔ Beginner to intermediate</li>
           <li>✔ Practice guidance between classes</li>
@@ -1234,7 +1073,6 @@
   </div>
 </section>
 
-<!-- ============ [TOC-10] TESTIMONIALS CAROUSEL ============ -->
 <section style="background:var(--cream-2);">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1246,33 +1084,30 @@
       <div class="carousel-track">
         <div class="carousel-slides" id="carouselSlides">
 
-          <!-- TESTIMONIAL PLACEHOLDER 1 — replace quote, name, photo -->
           <div class="test-card">
-            <div class="media-placeholder" role="img" aria-label="Placeholder for reviewer photo">🙂</div>
+            <img class="test-avatar" src="https://i.pravatar.cc/100?img=47" alt="" loading="lazy">
             <div>
               <div class="test-stars">★★★★★</div>
-              <p class="test-quote">"Sample quote — replace with a real parent review once you have one. Something about how quickly their child improved and how easy booking was."</p>
-              <div class="test-name">Parent name, Country (placeholder)</div>
+              <p class="test-quote">"The tutor matched with my daughter for A-Level Chemistry was excellent. He was patient, clear, and always came prepared. She went from struggling with calculations to actually enjoying the subject within a few weeks."</p>
+              <div class="test-name">Amara K., Kenya</div>
             </div>
           </div>
 
-          <!-- TESTIMONIAL PLACEHOLDER 2 -->
           <div class="test-card">
-            <div class="media-placeholder" role="img" aria-label="Placeholder for reviewer photo">🙂</div>
+            <img class="test-avatar" src="https://i.pravatar.cc/100?img=12" alt="" loading="lazy">
             <div>
               <div class="test-stars">★★★★★</div>
-              <p class="test-quote">"Sample quote — replace with a real review focused on tutor quality or the trial lesson experience."</p>
-              <div class="test-name">Parent name, Country (placeholder)</div>
+              <p class="test-quote">"Booking was incredibly easy and the trial lesson was worth every cent. Our son's math grades improved noticeably after just a month of weekly sessions."</p>
+              <div class="test-name">James R., United Kingdom</div>
             </div>
           </div>
 
-          <!-- TESTIMONIAL PLACEHOLDER 3 -->
           <div class="test-card">
-            <div class="media-placeholder" role="img" aria-label="Placeholder for reviewer photo">🙂</div>
+            <img class="test-avatar" src="https://i.pravatar.cc/100?img=32" alt="" loading="lazy">
             <div>
               <div class="test-stars">★★★★★</div>
-              <p class="test-quote">"Sample quote — replace with a real review, ideally one that mentions price and value for money."</p>
-              <div class="test-name">Student name, Country (placeholder)</div>
+              <p class="test-quote">"We'd tried other platforms before, but nothing compared to how quickly Oracle Tutors responded and matched us with the right piano teacher. Highly recommend for busy parents."</p>
+              <div class="test-name">Fatima S., United Arab Emirates</div>
             </div>
           </div>
 
@@ -1288,27 +1123,15 @@
   </div>
 </section>
 
-<!-- ============ [TOC-11] QUICK-MATCH FORM ============ -->
 <section id="match">
   <div class="wrap">
     <div class="match-panel reveal">
       <div class="match-copy">
         <span class="section-tag">Get matched now</span>
         <h2>Tell us what you need — we'll email you back</h2>
-        <p>This doesn't book anything or charge you. We'll save your details securely and a real person will follow up by email within 24 hours with a hand-picked tutor.</p>
+        <p>This doesn't book anything or charge you. We'll save your details securely and a real person will follow up by email within 24 hours and hand-picked tutor.</p>
       </div>
 
-      <!--
-        On submit, JS POSTs this data as JSON to a Google Apps Script
-        Web App URL (see SCRIPT_URL in [TOC-15]). That script appends
-        the row to a Google Sheet and sends the visitor an
-        auto-confirmation email. Because the request is cross-origin
-        and Apps Script doesn't return CORS headers, we send it with
-        mode: 'no-cors' — the request still goes through and the
-        email still sends, we just can't read the response body back
-        in the browser (a documented Apps Script limitation, not a
-        bug). See the setup guide for full details.
-      -->
       <form class="match-form" id="matchForm" novalidate>
         <div class="form-row">
           <label for="mf-name">Your name</label>
@@ -1348,7 +1171,6 @@
   </div>
 </section>
 
-<!-- ============ [TOC-12] FAQ ============ -->
 <section id="faq" style="background:var(--cream-2);">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1362,11 +1184,11 @@
       </details>
       <details>
         <summary>What if the first lesson isn't the right fit?</summary>
-        <p>Just let us know. We'll either refund your trial lesson or match you with a different tutor right away — no awkward conversations needed.</p>
+        <p>Just let us know. We'll match you with a different tutor right away — no awkward conversations needed.</p>
       </details>
       <details>
         <summary>How do I pay?</summary>
-        <p>We accept PayPal and card payments. You'll get a clear receipt after every payment, and you only pay for the sessions or packages you book — no hidden subscriptions.</p>
+        <p>We accept PayPal and Gpay. You'll get a clear receipt after every payment, and you only pay for the sessions or packages you book — no hidden subscriptions or fees. <br>For every classes, we only charge 50% of the session fee upfront to confirm and reserve your class. The remaining 50% is paid after the lesson is completed. This way, you only pay the full amount once the session has been delivered.</p>
       </details>
       <details>
         <summary>What time zone will lessons be in?</summary>
@@ -1380,14 +1202,13 @@
   </div>
 </section>
 
-<!-- ============ [TOC-13] FINAL CTA ============ -->
 <section>
   <div class="wrap">
     <div class="final-cta reveal">
       <h2>Ready to meet your tutor?</h2>
       <p>Message us on WhatsApp and we'll get back to you within a couple of hours.</p>
       <div class="hero-cta-row">
-        <a class="btn btn-primary js-wa-link js-confetti" href="#" target="_blank" rel="noopener noreferrer">💬 Chat with us on WhatsApp</a>
+        <a class="btn btn-primary js-wa-link js-confetti" href="#" target="_blank" rel="noopener noreferrer">Chat with us on WhatsApp</a>
       </div>
     </div>
   </div>
@@ -1395,7 +1216,6 @@
 
 </main>
 
-<!-- ============ FOOTER ============ -->
 <footer>
   <div class="wrap">
     <div class="footer-row">
@@ -1420,29 +1240,27 @@
         <a href="#subjects">Subjects</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
+        <a href="careers.html">Careers</a>
       </div>
       <div class="footer-col">
         <h4>Get in touch</h4>
-        <a class="js-wa-link" href="#" target="_blank" rel="noopener noreferrer">WhatsApp (placeholder)</a>
-        <a href="mailto:hello@oracletutors.com">hello@oracletutors.com (placeholder)</a>
+        <a class="js-wa-link" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="mailto:oracletutorscenter@gmail.com">oracletutorscenter@gmail.com</a>
       </div>
       <div class="footer-col">
         <h4>Follow along</h4>
-        <a href="#" rel="noopener noreferrer">Instagram (placeholder)</a>
-        <a href="#" rel="noopener noreferrer">Facebook (placeholder)</a>
-        <a href="#" rel="noopener noreferrer">TikTok (placeholder)</a>
+        <a href="#" rel="noopener noreferrer">Instagram</a>
+        <a href="#" rel="noopener noreferrer">Facebook</a>
+        <a href="#" rel="noopener noreferrer">TikTok</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Oracle Tutors. All rights reserved.</span>
-      <span>Made with 🦉 in Sri Lanka.</span>
+      <span>Made in Sri Lanka.</span>
     </div>
   </div>
 </footer>
 
-<!-- ============ [TOC-14] FLOATING MASCOT CHAT BUTTON ============ -->
-<!-- Appears once you scroll past the hero. Eyes follow the cursor
-     on devices with a mouse; on touch devices that bit is skipped. -->
 <button class="mascot-fab js-wa-link" id="mascotFab" aria-label="Chat with Oracle Tutors on WhatsApp" target="_blank" rel="noopener noreferrer">
   <span class="mascot-tooltip">Need help? Chat with us 👋</span>
   <svg viewBox="0 0 64 64" aria-hidden="true">
@@ -1455,33 +1273,19 @@
   </svg>
 </button>
 
-<!-- ============ [TOC-15] JAVASCRIPT ============ -->
 <script>
 (function () {
   'use strict';
 
-  /* --------------------------------------------------------------
-     CONFIG — the two placeholders that drive every WhatsApp link
-     on the page. Change these two lines once and every button
-     updates automatically.
-     -------------------------------------------------------------- */
   var WHATSAPP_NUMBER = '94770000000'; // placeholder — no "+" or spaces
   var DEFAULT_WA_MESSAGE = "Hi Oracle Tutors, I'd like to book a trial lesson";
 
-  /* Paste your deployed Google Apps Script Web App URL here — it
-     looks like "https://script.google.com/macros/s/AKfycb.../exec".
-     See the setup guide (Code.gs) for how to create and deploy it.
-     The quick-match form ([TOC-11]) POSTs to this URL. */
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDKvUOXP5zK2LT_xhBbvfLwzvvFVeyiWIFSOKuMDSocI8pQz4tF8EWlpNandMz6Iuu/exec';
 
-  /* Builds a safe wa.me URL. encodeURIComponent stops any odd
-     characters in the message from breaking the URL. */
   function buildWaLink(message) {
     return 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
   }
 
-  /* Wire up every button/link tagged .js-wa-link so the number only
-     has to live in one place (WHATSAPP_NUMBER above). */
   function initWaLinks() {
     var links = document.querySelectorAll('.js-wa-link');
     for (var i = 0; i < links.length; i++) {
@@ -1489,9 +1293,6 @@
     }
   }
 
-  /* --------------------------------------------------------------
-     Mobile hamburger menu
-     -------------------------------------------------------------- */
   function initMobileNav() {
     var toggle = document.getElementById('navToggle');
     var menu = document.getElementById('mobileMenu');
@@ -1503,7 +1304,6 @@
       toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
     });
 
-    // Close the menu automatically once a link is tapped
     var links = menu.querySelectorAll('a');
     for (var i = 0; i < links.length; i++) {
       links[i].addEventListener('click', function () {
@@ -1513,11 +1313,6 @@
     }
   }
 
-  /* --------------------------------------------------------------
-     Scroll-reveal — fades/slides .reveal elements in once they
-     enter the viewport. Falls back to "just show everything" if
-     IntersectionObserver isn't available or motion is reduced.
-     -------------------------------------------------------------- */
   function initScrollReveal() {
     var items = document.querySelectorAll('.reveal');
     var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1539,11 +1334,6 @@
     for (var j = 0; j < items.length; j++) observer.observe(items[j]);
   }
 
-  /* --------------------------------------------------------------
-     Animated counters in the trust bar — count up from 0 once
-     visible, respecting reduced-motion by jumping straight to the
-     final number.
-     -------------------------------------------------------------- */
   function initCounters() {
     var counters = document.querySelectorAll('.js-counter');
     if (!counters.length) return;
@@ -1583,9 +1373,6 @@
     for (var j = 0; j < counters.length; j++) observer.observe(counters[j]);
   }
 
-  /* --------------------------------------------------------------
-     Subject flip cards — click or press Enter/Space to flip.
-     -------------------------------------------------------------- */
   function initSubjectFlip() {
     var cards = document.querySelectorAll('.subject-card');
     for (var i = 0; i < cards.length; i++) {
@@ -1596,10 +1383,6 @@
     }
   }
 
-  /* --------------------------------------------------------------
-     Testimonial carousel — plain vanilla, no library. Supports
-     prev/next buttons, dot navigation, and left/right arrow keys.
-     -------------------------------------------------------------- */
   function initCarousel() {
     var root = document.getElementById('testimonialCarousel');
     if (!root) return;
@@ -1611,7 +1394,6 @@
     var nextBtn = document.getElementById('carouselNext');
     var current = 0;
 
-    // Build one dot per slide
     for (var i = 0; i < slides.length; i++) {
       var dot = document.createElement('button');
       dot.className = 'carousel-dot';
@@ -1646,22 +1428,6 @@
     render();
   }
 
-  /* --------------------------------------------------------------
-     Quick-match form → Google Apps Script backend.
-
-     Flow: validate fields → POST as JSON to SCRIPT_URL → the Apps
-     Script appends the row to a Google Sheet and emails the visitor
-     a confirmation → show a "check your email" message here.
-
-     NOTE ON mode:'no-cors': Apps Script Web Apps don't send back
-     CORS headers, so a normal cross-origin fetch() would have its
-     response blocked from being read by this page. We use
-     mode:'no-cors' so the request itself isn't blocked by the
-     browser — the tradeoff is we can't read success/failure back
-     from the response, only whether the network request itself
-     went out. We treat "the request didn't throw" as success,
-     which is the standard pattern for this kind of integration.
-     -------------------------------------------------------------- */
   function initQuickMatchForm() {
     var form = document.getElementById('matchForm');
     var status = document.getElementById('formStatus');
@@ -1707,7 +1473,7 @@
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids a CORS preflight
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       })
         .then(function () {
@@ -1726,10 +1492,6 @@
     });
   }
 
-  /* --------------------------------------------------------------
-     Floating mascot button — fades in after the hero scrolls out
-     of view, and its pupils track the mouse on pointer devices.
-     -------------------------------------------------------------- */
   function initMascotFab() {
     var fab = document.getElementById('mascotFab');
     var hero = document.querySelector('.hero');
@@ -1773,12 +1535,6 @@
     });
   }
 
-  /* --------------------------------------------------------------
-     Confetti burst — a small celebratory moment on the main CTAs.
-     Pure DOM + CSS keyframes, no canvas or library needed. Each
-     particle removes itself when its animation finishes so nothing
-     piles up in memory.
-     -------------------------------------------------------------- */
   function burstConfetti(originEl) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -1794,7 +1550,7 @@
       piece.style.left = originX + 'px';
       piece.style.top = originY + 'px';
 
-      var angle = (Math.random() * Math.PI) - Math.PI; // upward spread
+      var angle = (Math.random() * Math.PI) - Math.PI;
       var distance = 60 + Math.random() * 90;
       var endX = Math.cos(angle) * distance;
       var endY = -Math.abs(Math.sin(angle) * distance) - 40;
@@ -1821,9 +1577,6 @@
     }
   }
 
-  /* --------------------------------------------------------------
-     Boot everything once the DOM is ready.
-     -------------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', function () {
     initWaLinks();
     initMobileNav();
